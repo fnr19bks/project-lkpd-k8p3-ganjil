@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#6C5CE7">
+<title>Algo Quest: Dari Ide ke Langkah</title>
+<style>
+/* =========================================================
+   EDITABLE: PALET WARNA TEMA (ubah warna di sini)
+   ========================================================= */
+:root{
+  --primary:#6C5CE7;
+  --primary-dark:#4B3FC4;
+  --primary-soft:#EDE9FF;
+  --accent:#00C9A7;
+  --accent-soft:#E4FBF5;
+  --warn:#FFB020;
+  --danger:#FF4D6D;
+  --danger-soft:#FFE7EC;
+  --ink:#1B1B32;
+  --muted:#6B6B85;
+  --line:#E4E4F0;
+  --bg1:#EEF1FF;
+  --bg2:#FFF0F5;
+  --card:#FFFFFF;
+  --r:18px;
+  --shadow:0 8px 24px rgba(40,40,90,.10);
+  --shadow-lg:0 14px 40px rgba(40,40,90,.16);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Nunito','Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+  background:linear-gradient(165deg,var(--bg1) 0%,var(--bg2) 100%);
+  background-attachment:fixed;
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:110px;
+  font-size:16px;
+  line-height:1.45;
+}
+.hidden{display:none !important;}
+
+/* ---------- TOP BAR ---------- */
+.topbar{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(108,92,231,.14);
+}
+.icon-btn{
+  border:none;background:var(--primary-soft);color:var(--primary-dark);
+  width:40px;height:40px;border-radius:12px;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex:none;
+  transition:.15s;
+}
+.icon-btn:active{transform:scale(.94);}
+.progress-wrap{flex:1;min-width:0;}
+.progress-label{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px;letter-spacing:.2px;}
+.progress-track{height:10px;background:var(--primary-soft);border-radius:99px;overflow:hidden;}
+.progress-fill{
+  height:100%;width:0%;border-radius:99px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:width .5s cubic-bezier(.3,1.2,.5,1);
+}
+.score-pill{
+  flex:none;background:linear-gradient(135deg,var(--warn),#FF9A3C);
+  color:#fff;font-weight:900;font-size:13px;padding:8px 12px;border-radius:99px;
+  box-shadow:0 4px 12px rgba(255,176,32,.35);white-space:nowrap;
+}
+
+/* ---------- SCREEN ---------- */
+#screen{max-width:900px;margin:0 auto;padding:16px 14px 20px;}
+
+/* ---------- HOME ---------- */
+.hero{text-align:center;padding:26px 12px 14px;}
+.hero-emoji{font-size:56px;line-height:1;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{
+  font-size:38px;margin:10px 0 2px;font-weight:900;letter-spacing:-1px;
+  background:linear-gradient(120deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-sub{font-size:19px;font-weight:800;color:var(--primary-dark);margin:0;}
+.hero-tag{font-size:13.5px;color:var(--muted);margin:8px 0 0;font-weight:600;}
+
+.stages{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:18px 0 6px;
+}
+.stage-chip{
+  background:#fff;border:2px solid var(--line);border-radius:99px;
+  padding:6px 12px;font-size:12.5px;font-weight:800;color:var(--muted);
+  box-shadow:var(--shadow);
+}
+.stage-chip b{color:var(--primary);}
+
+.level-map{display:grid;gap:12px;margin:20px 0;}
+.lv-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--card);border-radius:var(--r);padding:14px 16px;
+  box-shadow:var(--shadow);border:2px solid transparent;cursor:pointer;
+  transition:.18s;text-align:left;
+}
+.lv-card:active{transform:scale(.985);}
+.lv-card.locked{opacity:.55;cursor:not-allowed;filter:grayscale(.4);}
+.lv-card.done{border-color:var(--accent);background:linear-gradient(135deg,#fff,var(--accent-soft));}
+.lv-ico{
+  width:52px;height:52px;flex:none;border-radius:14px;display:flex;
+  align-items:center;justify-content:center;font-size:26px;
+  background:linear-gradient(135deg,var(--primary-soft),#FFF0F5);
+}
+.lv-card.done .lv-ico{background:linear-gradient(135deg,var(--accent-soft),#D6F7EE);}
+.lv-info{flex:1;min-width:0;}
+.lv-info h4{margin:0 0 2px;font-size:15.5px;font-weight:900;}
+.lv-info p{margin:0;font-size:12.5px;color:var(--muted);font-weight:600;}
+.lv-badge{font-size:11px;font-weight:900;padding:4px 9px;border-radius:99px;background:var(--primary-soft);color:var(--primary-dark);}
+.lv-card.done .lv-badge{background:var(--accent);color:#fff;}
+
+.home-actions{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+.hint{font-size:12.5px;color:var(--muted);text-align:center;margin-top:16px;font-weight:600;}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  border:none;border-radius:14px;padding:14px 22px;font-size:16px;font-weight:900;
+  cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;box-shadow:0 8px 20px rgba(108,92,231,.35);
+}
+.btn-accent{
+  background:linear-gradient(135deg,var(--accent),#00A98F);
+  color:#fff;box-shadow:0 8px 20px rgba(0,201,167,.35);
+}
+.btn-ghost{background:#fff;color:var(--muted);border:2px solid var(--line);box-shadow:var(--shadow);}
+.btn-lg{width:100%;padding:16px;font-size:17px;}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ---------- LEVEL LAYOUT ---------- */
+.level{animation:fadeUp .35s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.level-head{text-align:center;margin-bottom:16px;}
+.chip{
+  display:inline-block;background:var(--primary);color:#fff;font-size:11.5px;
+  font-weight:900;letter-spacing:.6px;padding:5px 12px;border-radius:99px;
+  text-transform:uppercase;
+}
+.level-head h2{font-size:24px;margin:10px 0 6px;font-weight:900;}
+.level-desc{font-size:14px;color:var(--muted);margin:0;font-weight:600;}
+.level-desc b{color:var(--primary-dark);}
+
+.panel{
+  background:var(--card);border-radius:var(--r);padding:16px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+}
+.panel-title{font-size:14px;font-weight:900;margin:0 0 10px;color:var(--primary-dark);
+  display:flex;align-items:center;gap:8px;}
+.status-line{
+  text-align:center;font-size:13.5px;font-weight:800;color:var(--muted);
+  margin:0 0 12px;
+}
+.status-line b{color:var(--primary);font-size:16px;}
+
+/* ---------- LEVEL 1 : MEMORY / MATCH ---------- */
+.l1-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));
+  gap:9px;
+}
+.mcard{
+  position:relative;border:2px solid var(--line);background:#fff;border-radius:14px;
+  padding:16px 8px 12px;min-height:86px;cursor:pointer;font-family:inherit;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;transition:.15s;box-shadow:0 3px 10px rgba(40,40,90,.06);
+}
+.mcard:active{transform:scale(.96);}
+.mcard-type{
+  position:absolute;top:5px;left:6px;font-size:9px;font-weight:900;
+  padding:2px 6px;border-radius:99px;background:var(--primary-soft);color:var(--primary-dark);
+}
+.mcard[data-type="id"] .mcard-type{background:#FFF0E0;color:#C97A00;}
+.mcard-text{font-size:12.5px;font-weight:800;text-align:center;line-height:1.25;word-break:break-word;}
+.mcard[data-type="en"] .mcard-text{color:var(--primary-dark);}
+.mcard.sel{border-color:var(--primary);background:var(--primary-soft);transform:scale(1.03);box-shadow:0 0 0 4px rgba(108,92,231,.18);}
+.mcard.wrong{border-color:var(--danger);background:var(--danger-soft);animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.mcard.matched{
+  border-color:var(--accent);background:linear-gradient(135deg,var(--accent-soft),#D6F7EE);
+  pointer-events:none;opacity:.92;
+}
+.mcard.matched::after{
+  content:"✓";position:absolute;top:4px;right:7px;color:var(--accent);
+  font-weight:900;font-size:14px;
+}
+
+/* ---------- LEVEL 2 : SORTABLE STEPS ---------- */
+.sortlist{display:flex;flex-direction:column;gap:8px;}
+.step{
+  display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);
+  border-radius:14px;padding:11px 12px;cursor:grab;user-select:none;
+  font-size:13.5px;font-weight:700;transition:.15s;box-shadow:0 2px 8px rgba(40,40,90,.05);
+}
+.step:active{cursor:grabbing;}
+.step-num{
+  flex:none;width:26px;height:26px;border-radius:9px;background:var(--primary-soft);
+  color:var(--primary-dark);font-weight:900;font-size:12.5px;
+  display:flex;align-items:center;justify-content:center;
+}
+.step-txt{flex:1;line-height:1.3;}
+.step-grip{flex:none;color:#C4C4D8;font-size:15px;letter-spacing:-1px;}
+.step.sel{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 4px rgba(108,92,231,.15);}
+.step.dragging{opacity:.45;border-style:dashed;}
+.step.ok{border-color:var(--accent);background:linear-gradient(135deg,#fff,var(--accent-soft));}
+.step.ok .step-num{background:var(--accent);color:#fff;}
+.step.no{border-color:var(--danger);background:var(--danger-soft);}
+.step.no .step-num{background:var(--danger);color:#fff;}
+
+/* ---------- LEVEL 3 : FLOWCHART ---------- */
+.shape-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+.shape-card{
+  background:#fff;border-radius:16px;padding:12px;border:2px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;
+  transition:.15s;box-shadow:0 3px 10px rgba(40,40,90,.06);
+}
+.shape-card:active{transform:scale(.98);}
+.shape-card.sel{border-color:var(--primary);box-shadow:0 0 0 4px rgba(108,92,231,.15);}
+.shape-card.solved{border-color:var(--accent);background:linear-gradient(160deg,#fff,var(--accent-soft));cursor:default;}
+.shape-card.wrong{animation:shake .4s;border-color:var(--danger);}
+.shape-visual{
+  width:100%;height:78px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#F4F1FF,#E7E1FF);
+  border:2px solid rgba(108,92,231,.40);color:var(--primary-dark);
+  font-weight:900;font-size:12px;text-align:center;padding:6px;
+}
+.shape-oval{border-radius:999px;}
+.shape-rect{border-radius:12px;}
+.shape-para{transform:skewX(-14deg);border-radius:10px;}
+.shape-para i{transform:skewX(14deg);font-style:normal;}
+.shape-diamond-wrap{height:78px;display:flex;align-items:center;justify-content:center;}
+.shape-diamond{
+  width:58px;height:58px;transform:rotate(45deg);border-radius:9px;
+  background:linear-gradient(135deg,#F4F1FF,#E7E1FF);
+  border:2px solid rgba(108,92,231,.40);
+}
+.shape-arrow{font-size:32px;border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent);}
+.shape-label{font-size:12px;font-weight:900;text-align:center;color:var(--ink);line-height:1.25;}
+.shape-label span{display:block;font-size:10.5px;font-weight:700;color:var(--muted);}
+.shape-slot{
+  width:100%;min-height:46px;border:2px dashed var(--line);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:11.5px;font-weight:700;color:#A9A9C0;padding:6px;line-height:1.25;
+}
+.shape-slot.filled{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:#04795F;}
+
+.chip-bank{display:flex;flex-wrap:wrap;gap:8px;}
+.tchip{
+  background:#fff;border:2px solid var(--primary);color:var(--primary-dark);
+  border-radius:99px;padding:9px 14px;font-size:12.5px;font-weight:800;
+  cursor:pointer;font-family:inherit;transition:.15s;text-align:left;
+  box-shadow:0 3px 10px rgba(108,92,231,.12);
+}
+.tchip:active{transform:scale(.96);}
+.tchip.sel{background:var(--primary);color:#fff;}
+.tchip.used{display:none;}
+
+/* ---------- LEVEL 4 : DEBUG ---------- */
+.code-box{
+  background:#1B1B32;border-radius:14px;padding:12px 0;overflow:hidden;
+  font-family:'Courier New',ui-monospace,monospace;font-size:13px;
+}
+.code-line{
+  display:flex;gap:10px;padding:8px 14px;cursor:pointer;transition:.12s;
+  color:#D8D8F0;align-items:flex-start;border-left:4px solid transparent;
+}
+.code-line:hover{background:rgba(255,255,255,.06);}
+.code-line .ln{color:#6B6B95;font-weight:700;min-width:16px;text-align:right;flex:none;}
+.code-line.sel{background:rgba(255,176,32,.18);border-left-color:var(--warn);color:#fff;}
+.code-line.ok{background:rgba(0,201,167,.20);border-left-color:var(--accent);color:#fff;}
+.code-line.no{background:rgba(255,77,109,.18);border-left-color:var(--danger);}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.opt{
+  text-align:left;background:#fff;border:2px solid var(--line);border-radius:14px;
+  padding:12px 14px;font-size:13.5px;font-weight:700;cursor:pointer;
+  font-family:inherit;color:var(--ink);transition:.15s;line-height:1.35;
+}
+.opt:active{transform:scale(.985);}
+.opt.ok{border-color:var(--accent);background:var(--accent-soft);}
+.opt.no{border-color:var(--danger);background:var(--danger-soft);}
+.opt:disabled{cursor:default;}
+
+/* ---------- LEVEL 5 : BOSS ---------- */
+.boss-grid{display:grid;gap:14px;}
+.dropzone{
+  min-height:80px;border:2px dashed var(--line);border-radius:14px;padding:10px;
+  display:flex;flex-direction:column;gap:8px;background:#FAFAFF;
+}
+.dropzone:empty::before{
+  content:"Klik langkah di bank bawah untuk menambahkannya ke sini ⬇";
+  color:#A9A9C0;font-size:12.5px;font-weight:700;text-align:center;
+  display:block;padding:22px 8px;
+}
+.step .rm{
+  flex:none;border:none;background:var(--danger-soft);color:var(--danger);
+  width:26px;height:26px;border-radius:9px;font-weight:900;cursor:pointer;
+  font-size:14px;font-family:inherit;
+}
+.bank-item{
+  display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);
+  border-radius:14px;padding:11px 12px;font-size:13.5px;font-weight:700;
+  cursor:pointer;font-family:inherit;text-align:left;color:var(--ink);transition:.15s;
+  width:100%;
+}
+.bank-item:active{transform:scale(.985);}
+.bank-item.used{display:none;}
+
+/* ---------- RESULT / GRADUATION ---------- */
+.result-card{
+  background:var(--card);border-radius:22px;padding:24px 18px;text-align:center;
+  box-shadow:var(--shadow-lg);
+}
+.badge-circle{
+  width:130px;height:130px;margin:0 auto 14px;border-radius:50%;
+  background:linear-gradient(135deg,var(--warn),#FF8A3C);
+  display:flex;align-items:center;justify-content:center;font-size:56px;
+  box-shadow:0 0 0 10px rgba(255,176,32,.18),0 0 0 20px rgba(255,176,32,.09);
+  animation:pop .6s cubic-bezier(.3,1.6,.5,1) both;
+}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.badge-title{font-size:24px;font-weight:900;margin:0 0 4px;}
+.badge-sub{font-size:13.5px;color:var(--muted);font-weight:700;margin:0 0 18px;}
+.score-rows{display:flex;flex-direction:column;gap:8px;margin:16px 0;}
+.score-row{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;}
+.score-row .nm{flex:none;width:74px;text-align:left;color:var(--muted);}
+.score-row .bar{flex:1;height:12px;background:var(--primary-soft);border-radius:99px;overflow:hidden;}
+.score-row .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .8s;}
+.score-row .vl{flex:none;width:38px;text-align:right;color:var(--primary-dark);}
+.total-box{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;border-radius:16px;padding:16px;margin:6px 0 18px;
+}
+.total-box .t-num{font-size:34px;font-weight:900;line-height:1;}
+.total-box .t-lab{font-size:12px;font-weight:800;opacity:.85;letter-spacing:.5px;}
+
+.next-wrap{display:flex;justify-content:center;margin:18px 0 6px;animation:fadeUp .3s both;}
+.next-wrap .btn{width:100%;max-width:420px;}
+
+/* ---------- FAB & MODAL ---------- */
+.fab{
+  position:fixed;right:16px;bottom:18px;z-index:90;
+  width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;font-size:24px;box-shadow:0 10px 26px rgba(108,92,231,.45);
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.fab:active{transform:scale(.92);}
+.modal{
+  position:fixed;inset:0;z-index:150;background:rgba(20,20,45,.55);
+  backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;
+  padding:0;animation:fade .2s;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal-card{
+  background:#fff;width:100%;max-width:600px;max-height:86vh;border-radius:22px 22px 0 0;
+  display:flex;flex-direction:column;overflow:hidden;animation:slideUp .28s cubic-bezier(.2,1,.4,1);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@media(min-width:640px){
+  .modal{align-items:center;}
+  .modal-card{border-radius:22px;max-height:80vh;}
+}
+.modal-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px;border-bottom:1px solid var(--line);flex:none;
+}
+.modal-head h3{margin:0;font-size:17px;font-weight:900;}
+.modal-body{padding:14px 18px 26px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.dict-item{
+  display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line);
+}
+.dict-item:last-child{border-bottom:none;}
+.dict-en{
+  flex:none;min-width:96px;font-weight:900;font-size:13px;color:var(--primary-dark);
+  background:var(--primary-soft);padding:5px 10px;border-radius:9px;text-align:center;
+}
+.dict-id{font-size:13px;font-weight:700;}
+.dict-item.lock .dict-en{background:#F1F1F6;color:#B4B4C8;}
+.dict-item.lock .dict-id{color:#B4B4C8;font-style:italic;}
+.dict-sec{
+  font-size:12px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;
+  color:var(--muted);margin:18px 0 6px;
+}
+.dict-stages{display:flex;flex-wrap:wrap;gap:6px;}
+.dict-stages span{
+  background:var(--accent-soft);color:#04795F;font-size:11.5px;font-weight:800;
+  padding:5px 10px;border-radius:99px;
+}
+
+/* ---------- TOAST ---------- */
+#toast{
+  position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);
+  background:#1B1B32;color:#fff;padding:13px 20px;border-radius:14px;
+  font-weight:800;font-size:13.5px;max-width:88vw;text-align:center;
+  opacity:0;pointer-events:none;transition:.28s;z-index:300;
+  box-shadow:0 12px 34px rgba(0,0,0,.3);line-height:1.35;
+}
+#toast.show{opacity:1;transform:translate(-50%,0);}
+#toast.good{background:linear-gradient(135deg,#00C9A7,#00A98F);}
+#toast.bad{background:linear-gradient(135deg,#FF7A8A,#FF4D6D);}
+#toast.info{background:linear-gradient(135deg,#6C5CE7,#4B3FC4);}
+
+/* ---------- DESKTOP TWEAKS ---------- */
+@media(min-width:700px){
+  .hero h1{font-size:46px;}
+  .level-map{grid-template-columns:1fr 1fr;}
+  .home-actions{flex-direction:row;}
+  .home-actions .btn{flex:1;}
+  .l1-grid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr));}
+  .boss-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header id="topbar" class="topbar hidden">
+  <button id="homeBtn" class="icon-btn" title="Beranda" aria-label="Beranda">🏠</button>
+  <div class="progress-wrap">
+    <div class="progress-label" id="progressText">Level 1 dari 5</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <div class="score-pill" id="scorePill">⭐ 0</div>
+</header>
+
+<!-- ============ MAIN SCREEN ============ -->
+<main id="screen"></main>
+
+<!-- ============ DICTIONARY FAB ============ -->
+<button id="dictBtn" class="fab hidden" title="Kamus Istilah" aria-label="Kamus Istilah">📖</button>
+
+<!-- ============ DICTIONARY MODAL ============ -->
+<div id="dictModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>📖 Kamus Istilah</h3>
+      <button id="dictClose" class="icon-btn" aria-label="Tutup">✕</button>
+    </div>
+    <div class="modal-body" id="dictBody"></div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div id="toast"></div>
+
+<script>
+/* =========================================================================
+   ALGO QUEST — Dari Ide ke Langkah
+   Game edukasi Informatika Kelas 8 (Berpikir Komputasional)
+   Semua konten yang boleh diubah ada di blok "EDITABLE ZONE" di bawah ini.
+   ========================================================================= */
+
+/* ========================= EDITABLE ZONE ========================= */
+
+// EDITABLE: Nama game & judul layar pembuka
+const GAME_TITLE    = "Algo Quest";
+const GAME_SUBTITLE = "Dari Ide ke Langkah";
+const GAME_TAGLINE  = "Petualangan Merancang Algoritma • Informatika Kelas 8";
+
+// EDITABLE: Nama badge kelulusan di akhir
+const BADGE_EMOJI = "🏆";
+const BADGE_NAME  = "Algorithm Designer";
+
+// EDITABLE: Teks feedback benar/salah (dwibahasa)
+const FB = {
+  correct   : "🎉 Correct! (Benar!) Langkahmu sudah tepat.",
+  wrong     : "🤔 Try again! (Coba lagi!) Cek urutannya lagi ya.",
+  match     : "🎉 Correct! (Benar!) Pasangan tepat!",
+  nomatch   : "🤔 Try again! (Coba lagi!) Itu bukan pasangannya.",
+  placed    : "🎉 Correct! (Benar!) Simbolnya sudah pas!",
+  badPlace  : "🤔 Try again! (Coba lagi!) Simbol itu belum cocok.",
+  fixed     : "🎉 Correct! (Benar!) Kamu menemukan kesalahannya!",
+  notBug    : "🤔 Try again! (Coba lagi!) Baris itu masih benar.",
+  decoy     : "🤔 Try again! (Coba lagi!) Ada langkah jebakan yang tidak relevan.",
+  orderBad  : "🤔 Try again! (Coba lagi!) Urutannya belum tepat."
+};
+
+// EDITABLE: Daftar istilah Level 1 (bisa ditambah / dikurangi)
+const L1_PAIRS = [
+  { en:"Algorithm",  id:"Algoritma" },
+  { en:"Input",      id:"Data Masukan" },
+  { en:"Output",     id:"Hasil Keluaran" },
+  { en:"Process",    id:"Proses" },
+  { en:"Sequence",   id:"Urutan Langkah" },
+  { en:"Decompose",  id:"Memecah jadi Bagian Kecil" },
+  { en:"Pseudocode", id:"Kode Semu" },
+  { en:"Flowchart",  id:"Diagram Alir" },
+  { en:"Decision",   id:"Keputusan" },
+  { en:"Terminal",   id:"Simbol Mulai/Selesai" },
+  { en:"Finite",     id:"Berhingga (Ada Akhirnya)" },
+  { en:"Effective",  id:"Efektif (Bisa Dikerjakan)" }
+];
+
+// EDITABLE: Skenario & langkah-langkah Level 2 (urutan di dalam array = urutan BENAR)
+const L2_SCENARIOS = [
+  {
+    title: "Skenario A — Peminjaman Buku Perpustakaan",
+    emoji: "📚",
+    steps: [
+      "Murid datang membawa kartu anggota",
+      "Petugas mengecek status kartu anggota",
+      "JIKA kartu tidak aktif → murid diminta perpanjang kartu",
+      "JIKA kartu aktif → murid memilih buku",
+      "Petugas mengecek ketersediaan buku",
+      "JIKA buku tidak tersedia → murid memilih buku lain",
+      "JIKA buku tersedia → petugas mencatat data peminjaman",
+      "Buku diserahkan ke murid"
+    ]
+  },
+  {
+    title: "Skenario B — Izin Masuk Laboratorium",
+    emoji: "🧪",
+    steps: [
+      "Murid meminta izin ke guru piket",
+      "Guru mengecek jadwal praktik",
+      "JIKA tidak ada jadwal → izin ditolak, kembali ke kelas",
+      "JIKA ada jadwal → guru mengecek kelengkapan (sepatu tertutup, alat tulis)",
+      "JIKA belum lengkap → murid diminta melengkapi",
+      "JIKA sudah lengkap → murid masuk & mengisi buku catatan lab"
+    ]
+  }
+];
+
+// EDITABLE: Level 3 — pasangan simbol flowchart & contoh teksnya
+const L3_ITEMS = [
+  { id:"terminal", shape:"oval",    shapeLabel:"Oval",                 name:"Terminal",                       en:"(Mulai / Selesai)",              text:'"Mulai" / "Selesai"' },
+  { id:"process",  shape:"rect",    shapeLabel:"Persegi Panjang",      name:"Proses",                         en:"(Process)",                      text:'"Petugas mencatat data peminjaman"' },
+  { id:"io",       shape:"para",    shapeLabel:"Jajaran Genjang",      name:"Input/Output",                   en:"(Data Masukan / Hasil Keluaran)",text:'"Murid memasukkan kartu anggota"' },
+  { id:"decision", shape:"diamond", shapeLabel:"Diamond (Belah Ketupat)", name:"Keputusan",                   en:"(Decision)",                     text:'"Apakah buku tersedia?"' }
+];
+
+// EDITABLE: Level 4 — soal debug pseudocode
+const L4_QUESTIONS = [
+  {
+    title: "Soal 1 — Mudah",
+    hint: "Ada bagian penting yang hilang di akhir pseudocode ini. Klik baris yang bermasalah.",
+    code: [
+      "MULAI",
+      "  INPUT (Data Masukan): kartu anggota, judul buku",
+      "  PROSES (Process): cek status kartu, cek ketersediaan buku, catat peminjaman",
+      "SELESAI"
+    ],
+    badLine: 3,
+    options: [
+      "Tambahkan OUTPUT (Hasil Keluaran): buku diserahkan ke murid — letakkan SEBELUM baris SELESAI",
+      "Hapus baris INPUT (Data Masukan) karena tidak diperlukan",
+      "Ganti kata SELESAI menjadi MULAI"
+    ],
+    correct: 0,
+    explain: "Algoritma yang baik harus punya HASIL. Baris OUTPUT (Hasil Keluaran) wajib ada sebelum SELESAI."
+  },
+  {
+    title: "Soal 2 — Sedang",
+    hint: "Perhatikan urutannya. Klik baris yang posisinya salah.",
+    code: [
+      "MULAI",
+      "  INPUT (Data Masukan): kartu anggota",
+      "  OUTPUT (Hasil Keluaran): buku diserahkan ke murid",
+      "  PROSES (Process): cek status kartu",
+      "SELESAI"
+    ],
+    badLine: 2,
+    options: [
+      "Pindahkan baris OUTPUT (Hasil Keluaran) ke bawah, SETELAH baris PROSES (Process)",
+      "Hapus baris PROSES (Process) saja",
+      "Tukar baris MULAI dengan baris INPUT (Data Masukan)"
+    ],
+    correct: 0,
+    explain: "Urutan yang benar: INPUT → PROSES → OUTPUT. Hasil tidak mungkin keluar sebelum diproses."
+  },
+  {
+    title: "Soal 3 — Sulit",
+    hint: "Logika kondisinya terbalik. Klik baris yang salah.",
+    code: [
+      "JIKA buku tersedia MAKA",
+      '  tampilkan "Buku sedang dipinjam, coba judul lain"',
+      "JIKA TIDAK",
+      "  catat data peminjaman"
+    ],
+    badLine: 1,
+    options: [
+      "Tukar aksinya: JIKA tersedia → catat data peminjaman; JIKA TIDAK → tampilkan pesan \"Buku sedang dipinjam, coba judul lain\"",
+      "Hapus semua blok JIKA supaya lebih singkat",
+      "Ganti kata JIKA TIDAK menjadi SELESAI"
+    ],
+    correct: 0,
+    explain: "Kondisi dan aksi harus sinkron. Buku tersedia = boleh dipinjam (catat data), bukan ditolak."
+  }
+];
+
+// EDITABLE: Level 5 — bank langkah boss level (ok:true = langkah benar, ok:false = jebakan)
+const L5_STEPS = [
+  { id:1, ok:true,  text:"Murid mengisi formulir peminjaman alat olahraga" },
+  { id:2, ok:true,  text:"Petugas mengecek ketersediaan alat" },
+  { id:3, ok:true,  text:"JIKA alat tidak tersedia → murid memilih alat lain" },
+  { id:4, ok:true,  text:"JIKA alat tersedia → petugas mencatat data peminjam dan alat" },
+  { id:5, ok:true,  text:"Alat diserahkan ke murid" },
+  { id:6, ok:false, text:"Murid membayar biaya sewa alat" },
+  { id:7, ok:false, text:"Petugas mengecek nilai rapor murid" },
+  { id:8, ok:false, text:"Murid mengembalikan alat sebelum meminjam" }
+];
+const L5_TARGET = [1,2,3,4,5]; // urutan id yang benar
+
+/* ======================= END OF EDITABLE ZONE ======================= */
+
+
+/* =========================================================
+   STATE & PENYIMPANAN (localStorage)
+   ========================================================= */
+const SAVE_KEY = "algoquest_k8p3_v1";
+
+let state = {
+  unlocked: 1,
+  done:  { 1:false, 2:false, 3:false, 4:false, 5:false },
+  scores:{ 1:0, 2:0, 3:0, 4:0, 5:0 },
+  dict:  []   // istilah EN yang sudah terbuka di Kamus
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(raw){
+      const s = JSON.parse(raw);
+      state = Object.assign(state, s);
+      state.done   = Object.assign({1:false,2:false,3:false,4:false,5:false}, s.done||{});
+      state.scores = Object.assign({1:0,2:0,3:0,4:0,5:0}, s.scores||{});
+      state.dict   = Array.isArray(s.dict) ? s.dict : [];
+    }
+  }catch(e){ /* localStorage tidak tersedia — jalan terus tanpa simpan */ }
+}
+function saveState(){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){}
+}
+function resetState(){
+  state = { unlocked:1, done:{1:false,2:false,3:false,4:false,5:false},
+            scores:{1:0,2:0,3:0,4:0,5:0}, dict:[] };
+  saveState();
+  updateProgress();
+}
+
+/* =========================================================
+   UTILITAS
+   ========================================================= */
+const $  = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.prototype.slice.call(root.querySelectorAll(sel));
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function isSorted(arr){
+  for(let i=1;i<arr.length;i++){ if(arr[i] < arr[i-1]) return false; }
+  return true;
+}
+
+let toastTimer = null;
+function toast(msg, type){
+  const el = $("#toast");
+  el.textContent = msg;
+  el.className = "show " + (type || "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.className = ""; }, 2000);
+}
+
+function completedCount(){
+  let n = 0;
+  for(let i=1;i<=5;i++){ if(state.done[i]) n++; }
+  return n;
+}
+function totalScore(){
+  let n = 0;
+  for(let i=1;i<=5;i++){ n += (state.scores[i]||0); }
+  return n;
+}
+function updateProgress(){
+  const pct = (completedCount()/5)*100;
+  const fill = $("#progressFill");
+  if(fill) fill.style.width = pct + "%";
+  const pill = $("#scorePill");
+  if(pill) pill.textContent = "⭐ " + totalScore();
+}
+function setTopbar(show, level){
+  $("#topbar").classList.toggle("hidden", !show);
+  $("#dictBtn").classList.toggle("hidden", !show);
+  if(show && level){
+    $("#progressText").textContent = "Level " + level + " dari 5";
+    updateProgress();
+  }
+}
+function goLevel(n){
+  window.scrollTo(0,0);
+  if(n === 1) return renderLevel1();
+  if(n === 2) return renderLevel2();
+  if(n === 3) return renderLevel3();
+  if(n === 4) return renderLevel4();
+  if(n === 5) return renderLevel5();
+  return renderGraduation();
+}
+function completeLevel(level, score){
+  state.done[level]   = true;
+  state.scores[level] = Math.max(state.scores[level]||0, Math.max(0, Math.min(100, Math.round(score))));
+  state.unlocked      = Math.max(state.unlocked, Math.min(level+1, 6));
+  saveState();
+  updateProgress();
+}
+function nextButton(container, label, targetLevel){
+  const wrap = document.createElement("div");
+  wrap.className = "next-wrap";
+  const btn = document.createElement("button");
+  btn.className = "btn btn-accent btn-lg";
+  btn.textContent = label;
+  btn.onclick = ()=> goLevel(targetLevel);
+  wrap.appendChild(btn);
+  container.appendChild(wrap);
+  setTimeout(()=>{ wrap.scrollIntoView({behavior:"smooth", block:"center"}); }, 120);
+}
+
+/* =========================================================
+   KAMUS ISTILAH (FAB)
+   ========================================================= */
+function openDict(){
+  const body = $("#dictBody");
+  let html = '<div class="dict-sec">Istilah Algoritma (Level 1)</div>';
+  L1_PAIRS.forEach(p=>{
+    const unlocked = state.dict.indexOf(p.en) !== -1;
+    html += '<div class="dict-item' + (unlocked ? '' : ' lock') + '">'
+          +   '<div class="dict-en">' + p.en + '</div>'
+          +   '<div class="dict-id">' + (unlocked ? p.id : '🔒 Belum terbuka — cocokkan di Level 1') + '</div>'
+          + '</div>';
+  });
+  html += '<div class="dict-sec">5 Tahap Merancang Algoritma</div>'
+        + '<div class="dict-stages">'
+        +   '<span>1. Pahami Masalah</span>'
+        +   '<span>2. Pecah (Decompose)</span>'
+        +   '<span>3. Susun Urutan (Sequence)</span>'
+        +   '<span>4. Tuliskan (Pseudocode / Flowchart)</span>'
+        +   '<span>5. Uji &amp; Perbaiki</span>'
+        + '</div>'
+        + '<div class="dict-sec">Ciri Algoritma yang Baik</div>'
+        + '<div class="dict-stages">'
+        +   '<span>Jelas</span><span>Berurutan</span><span>Berhingga (Finite)</span>'
+        +   '<span>Efektif (Effective)</span><span>Punya Hasil (Output)</span>'
+        + '</div>';
+  body.innerHTML = html;
+  $("#dictModal").classList.remove("hidden");
+}
+function closeDict(){ $("#dictModal").classList.add("hidden"); }
+
+$("#dictBtn").addEventListener("click", openDict);
+$("#dictClose").addEventListener("click", closeDict);
+$("#dictModal").addEventListener("click", e=>{ if(e.target.id === "dictModal") closeDict(); });
+$("#homeBtn").addEventListener("click", ()=>{ window.scrollTo(0,0); renderHome(); });
+
+/* =========================================================
+   LAYAR PEMBUKA (HOME)
+   ========================================================= */
+function renderHome(){
+  setTopbar(false);
+  const levels = [
+    { n:1, ico:"🔤", title:"Kamus Algoritma",        desc:"Cocokkan 12 istilah Inggris dengan artinya" },
+    { n:2, ico:"🧩", title:"Susun Langkahnya!",      desc:"Urutkan langkah peminjaman buku & izin lab" },
+    { n:3, ico:"🔷", title:"Cocokkan Simbolnya",     desc:"Pasangkan langkah dengan simbol flowchart" },
+    { n:4, ico:"🐞", title:"Cari Kesalahannya!",     desc:"Temukan bug pada pseudocode" },
+    { n:5, ico:"👑", title:"Boss Level: Rancang Sendiri", desc:"Susun algoritma peminjaman alat olahraga" }
+  ];
+
+  let mapHtml = "";
+  levels.forEach(l=>{
+    const locked = state.unlocked < l.n;
+    const done   = state.done[l.n];
+    mapHtml += '<div class="lv-card' + (locked ? ' locked' : '') + (done ? ' done' : '') + '" data-lv="' + l.n + '">'
+            +    '<div class="lv-ico">' + (locked ? '🔒' : l.ico) + '</div>'
+            +    '<div class="lv-info"><h4>Level ' + l.n + ' — ' + l.title + '</h4><p>' + l.desc + '</p></div>'
+            +    '<div class="lv-badge">' + (done ? '✓ ' + state.scores[l.n] : (locked ? 'Terkunci' : 'Main')) + '</div>'
+            +  '</div>';
+  });
+
+  $("#screen").innerHTML =
+    '<section class="home">'
+    + '<div class="hero">'
+    +   '<div class="hero-emoji">🧩</div>'
+    +   '<h1>' + GAME_TITLE + '</h1>'
+    +   '<p class="hero-sub">' + GAME_SUBTITLE + '</p>'
+    +   '<p class="hero-tag">' + GAME_TAGLINE + '</p>'
+    + '</div>'
+    + '<div class="stages">'
+    +   '<span class="stage-chip"><b>1</b> Pahami</span>'
+    +   '<span class="stage-chip"><b>2</b> Pecah</span>'
+    +   '<span class="stage-chip"><b>3</b> Susun Urutan</span>'
+    +   '<span class="stage-chip"><b>4</b> Tuliskan</span>'
+    +   '<span class="stage-chip"><b>5</b> Uji &amp; Perbaiki</span>'
+    + '</div>'
+    + '<div class="level-map">' + mapHtml + '</div>'
+    + '<div class="home-actions">'
+    +   '<button class="btn btn-primary btn-lg" id="startBtn">▶ ' + (state.unlocked > 1 ? 'Lanjut Bermain' : 'Mulai Bermain') + '</button>'
+    +   '<button class="btn btn-ghost" id="resetBtn">🔄 Reset Progres</button>'
+    + '</div>'
+    + '<p class="hint">Tips: tombol 📖 di pojok kanan bawah membuka Kamus Istilah kapan saja.</p>'
+    + '</section>';
+
+  $$(".lv-card").forEach(card=>{
+    card.addEventListener("click", ()=>{
+      const n = Number(card.dataset.lv);
+      if(state.unlocked < n){ toast("🔒 Level ini masih terkunci. Selesaikan level sebelumnya dulu ya!", "info"); return; }
+      goLevel(n);
+    });
+  });
+  $("#startBtn").addEventListener("click", ()=> goLevel(Math.min(state.unlocked, 5)));
+  $("#resetBtn").addEventListener("click", ()=>{
+    if(confirm("Reset semua progres dan mulai dari awal?")){
+      resetState();
+      renderHome();
+      toast("Progres direset. Selamat bermain! 🎮", "info");
+    }
+  });
+  updateProgress();
+}
+
+/* =========================================================
+   LEVEL 1 — KAMUS ALGORITMA (MATCHING)
+   ========================================================= */
+function renderLevel1(){
+  setTopbar(true, 1);
+
+  const pairs = L1_PAIRS;
+  let cards = [];
+  pairs.forEach((p, i)=>{
+    cards.push({ pid:i, type:"en", text:p.en });
+    cards.push({ pid:i, type:"id", text:p.id });
+  });
+  cards = shuffle(cards);
+
+  let first = null, matched = 0, wrongs = 0, locked = false;
+
+  $("#screen").innerHTML =
+    '<section class="level">'
+    + '<div class="level-head">'
+    +   '<span class="chip">Level 1</span>'
+    +   '<h2>🔤 Kamus Algoritma</h2>'
+    +   '<p class="level-desc">Klik satu kartu, lalu klik pasangannya. Cocokkan istilah <b>Inggris (EN)</b> dengan arti <b>Indonesia (ID)</b>-nya.</p>'
+    + '</div>'
+    + '<p class="status-line">Terbuka: <b id="l1count">0</b> / ' + pairs.length + ' pasangan</p>'
+    + '<div class="l1-grid" id="l1grid"></div>'
+    + '</section>';
+
+  const grid = $("#l1grid");
+
+  cards.forEach(c=>{
+    const el = document.createElement("button");
+    el.className = "mcard";
+    el.dataset.pid  = c.pid;
+    el.dataset.type = c.type;
+    el.innerHTML = '<span class="mcard-type">' + (c.type === "en" ? "EN" : "ID") + '</span>'
+                 + '<span class="mcard-text">' + c.text + '</span>';
+    el.addEventListener("click", ()=> handleClick(el));
+    grid.appendChild(el);
+  });
+
+  function handleClick(el){
+    if(locked) return;
+    if(el.classList.contains("matched")) return;
+
+    if(el === first){
+      el.classList.remove("sel");
+      first = null;
+      return;
+    }
+    if(!first){
+      first = el;
+      el.classList.add("sel");
+      return;
+    }
+
+    const a = first, b = el;
+    const samePid  = a.dataset.pid === b.dataset.pid;
+    const diffType = a.dataset.type !== b.dataset.type;
+
+    if(samePid && diffType){
+      // ---- COCOK ----
+      a.classList.remove("sel");
+      a.classList.add("matched");
+      b.classList.add("matched");
+      first = null;
+      matched++;
+
+      const p = pairs[Number(a.dataset.pid)];
+      if(state.dict.indexOf(p.en) === -1){
+        state.dict.push(p.en);
+        saveState();
+      }
+      $("#l1count").textContent = matched;
+      toast(FB.match, "good");
+
+      if(matched === pairs.length){
+        const score = Math.max(50, 100 - wrongs*5);
+        completeLevel(1, score);
+        nextButton($(".level"), "Lanjut ke Level 2 ▶", 2);
+      }
+    } else {
+      // ---- SALAH ----
+      locked = true;
+      wrongs++;
+      a.classList.add("wrong");
+      b.classList.add("wrong");
+      toast(FB.nomatch, "bad");
+      setTimeout(()=>{
+        a.classList.remove("wrong", "sel");
+        b.classList.remove("wrong");
+        first = null;
+        locked = false;
+      }, 620);
+    }
+  }
+}
+
+/* =========================================================
+   LEVEL 2 — SUSUN LANGKAHNYA! (REORDER)
+   ========================================================= */
+function renderLevel2(){
+  setTopbar(true, 2);
+
+  let scenarioIdx = 0;
+  let totalWrongs = 0;
+  let scenarioWrongs = 0;
+
+  renderScenario();
+
+  function renderScenario(){
+    const sc = L2_SCENARIOS[scenarioIdx];
+    const n  = sc.steps.length;
+
+    // buat urutan teracak (pastikan tidak langsung benar)
+    let order = shuffle(sc.steps.map((_, i)=> i));
+    let guard = 0;
+    while(isSorted(order) && guard++ < 50){ order = shuffle(order); }
+
+    $("#screen").innerHTML =
+      '<section class="level">'
+      + '<div class="level-head">'
+      +   '<span class="chip">Level 2</span>'
+      +   '<h2>🧩 Susun Langkahnya!</h2>'
+      +   '<p class="level-desc">' + sc.emoji + ' <b>' + sc.title + '</b><br>'
+      +   'Seret kartu (drag) atau <b>klik satu kartu lalu klik kartu lain</b> untuk menukar posisi.</p>'
+      + '</div>'
+      + '<div class="panel">'
+      +   '<p class="panel-title">📋 Urutan Langkah (' + n + ' kartu)</p>'
+      +   '<div class="sortlist" id="l2list"></div>'
+      + '</div>'
+      + '<button class="btn btn-primary btn-lg" id="l2check">✅ Periksa Urutan</button>'
+      + '</section>';
+
+    const list = $("#l2list");
+
+    order.forEach(stepIdx=>{
+      const el = document.createElement("div");
+      el.className = "step";
+      el.setAttribute("data-sortable", "1");
+      el.draggable = true;
+      el.dataset.id = stepIdx;
+      el.innerHTML = '<span class="step-num"></span>'
+                   + '<span class="step-txt">' + sc.steps[stepIdx] + '</span>'
+                   + '<span class="step-grip">⠿</span>';
+      list.appendChild(el);
+    });
+
+    renumber(list);
+    makeSortable(list, ()=> renumber(list));
+
+    $("#l2check").addEventListener("click", check);
+
+    function check(){
+      const els = $$(".step", list);
+      let allOk = true;
+
+      els.forEach((el, i)=>{
+        const ok = Number(el.dataset.id) === i;
+        el.classList.remove("ok", "no", "sel");
+        el.classList.add(ok ? "ok" : "no");
+        if(!ok) allOk = false;
+      });
+
+      if(allOk){
+        toast(FB.correct, "good");
+        const isLast = scenarioIdx === L2_SCENARIOS.length - 1;
+        if(isLast){
+          const score = Math.max(50, 100 - totalWrongs*8);
+          completeLevel(2, score);
+          const wrap = document.createElement("div");
+          wrap.className = "next-wrap";
+          const btn = document.createElement("button");
+          btn.className = "btn btn-accent btn-lg";
+          btn.textContent = "Lanjut ke Level 3 ▶";
+          btn.onclick = ()=> goLevel(3);
+          wrap.appendChild(btn);
+          $(".level").appendChild(wrap);
+          wrap.scrollIntoView({behavior:"smooth", block:"center"});
+        } else {
+          const wrap = document.createElement("div");
+          wrap.className = "next-wrap";
+          const btn = document.createElement("button");
+          btn.className = "btn btn-accent btn-lg";
+          btn.textContent = "Skenario Berikutnya ▶";
+          btn.onclick = ()=>{
+            scenarioIdx++;
+            totalWrongs += scenarioWrongs;
+            scenarioWrongs = 0;
+            window.scrollTo(0,0);
+            renderScenario();
+          };
+          wrap.appendChild(btn);
+          $(".level").appendChild(wrap);
+          wrap.scrollIntoView({behavior:"smooth", block:"center"});
+        }
+        $("#l2check").disabled = true;
+      } else {
+        scenarioWrongs++;
+        toast(FB.wrong, "bad");
+      }
+    }
+  }
+
+  function renumber(list){
+    $$(".step", list).forEach((el, i)=>{
+      const num = $(".step-num", el);
+      if(num) num.textContent = i + 1;
+    });
+  }
+}
+
+/* =========================================================
+   LEVEL 3 — COCOKKAN SIMBOLNYA (FLOWCHART)
+   ========================================================= */
+function renderLevel3(){
+  setTopbar(true, 3);
+
+  let selectedChip = null;
+  let placed = 0;
+  let wrongs = 0;
+
+  const bankOrder = shuffle(L3_ITEMS);
+
+  $("#screen").innerHTML =
+    '<section class="level">'
+    + '<div class="level-head">'
+    +   '<span class="chip">Level 3</span>'
+    +   '<h2>🔷 Cocokkan Simbolnya</h2>'
+    +   '<p class="level-desc">Klik teks langkah di bawah, lalu klik <b>simbol flowchart</b> yang tepat.<br>'
+    +   'Simbol <b>Alur (Flow)</b> bekerja otomatis menghubungkan simbol lain.</p>'
+    + '</div>'
+    + '<div class="shape-grid" id="l3shapes"></div>'
+    + '<div class="panel" style="margin-top:14px;">'
+    +   '<p class="panel-title">🗂️ Bank Teks Langkah</p>'
+    +   '<div class="chip-bank" id="l3bank"></div>'
+    + '</div>'
+    + '</section>';
+
+  const shapeGrid = $("#l3shapes");
+  const bank      = $("#l3bank");
+
+  // --- kartu simbol ---
+  L3_ITEMS.forEach(item=>{
+    const card = document.createElement("div");
+    card.className = "shape-card";
+    card.dataset.id = item.id;
+
+    let visual = "";
+    if(item.shape === "oval")    visual = '<div class="shape-visual shape-oval">Oval</div>';
+    if(item.shape === "rect")    visual = '<div class="shape-visual shape-rect">Persegi Panjang</div>';
+    if(item.shape === "para")    visual = '<div class="shape-visual shape-para"><i>Jajaran Genjang</i></div>';
+    if(item.shape === "diamond") visual = '<div class="shape-diamond-wrap"><div class="shape-diamond"></div></div>';
+
+    card.innerHTML = visual
+      + '<div class="shape-label">' + item.name + '<span>' + item.en + '</span></div>'
+      + '<div class="shape-slot" data-slot="1">Klik teks lalu klik simbol ini</div>';
+    card.addEventListener("click", ()=> tryPlace(item, card));
+    shapeGrid.appendChild(card);
+  });
+
+  // --- kartu simbol ALUR (otomatis) ---
+  const arrowCard = document.createElement("div");
+  arrowCard.className = "shape-card solved";
+  arrowCard.innerHTML = '<div class="shape-visual shape-arrow">➜</div>'
+    + '<div class="shape-label">Alur<span>(Flow)</span></div>'
+    + '<div class="shape-slot filled">✓ Otomatis menghubungkan simbol</div>';
+  shapeGrid.appendChild(arrowCard);
+
+  // --- bank teks ---
+  bankOrder.forEach(item=>{
+    const chip = document.createElement("button");
+    chip.className = "tchip";
+    chip.dataset.id = item.id;
+    chip.textContent = item.text;
+    chip.addEventListener("click", ()=>{
+      $$(".tchip", bank).forEach(c=> c.classList.remove("sel"));
+      chip.classList.add("sel");
+      selectedChip = chip;
+      $$(".shape-card").forEach(c=> c.classList.remove("sel"));
+    });
+    bank.appendChild(chip);
+  });
+
+  function tryPlace(item, card){
+    if(card.classList.contains("solved")) return;
+    if(card.querySelector(".shape-slot").classList.contains("filled")) return;
+
+    if(!selectedChip){
+      toast("👆 Pilih dulu teks langkahnya di bank bawah, ya!", "info");
+      return;
+    }
+
+    if(selectedChip.dataset.id === item.id){
+      const slot = card.querySelector(".shape-slot");
+      slot.textContent = item.text;
+      slot.classList.add("filled");
+      card.classList.add("solved");
+      selectedChip.classList.add("used");
+      selectedChip.classList.remove("sel");
+      selectedChip = null;
+      placed++;
+      toast(FB.placed, "good");
+
+      if(placed === L3_ITEMS.length){
+        const score = Math.max(50, 100 - wrongs*12);
+        completeLevel(3, score);
+        nextButton($(".level"), "Lanjut ke Level 4 ▶", 4);
+      }
+    } else {
+      wrongs++;
+      card.classList.add("wrong");
+      setTimeout(()=> card.classList.remove("wrong"), 450);
+      toast(FB.badPlace, "bad");
+    }
+  }
+}
+
+/* =========================================================
+   LEVEL 4 — CARI KESALAHANNYA! (DEBUG)
+   ========================================================= */
+function renderLevel4(){
+  setTopbar(true, 4);
+
+  let qIdx = 0;
+  let wrongs = 0;
+
+  renderQuestion();
+
+  function renderQuestion(){
+    const q = L4_QUESTIONS[qIdx];
+    let codeHtml = "";
+    q.code.forEach((line, i)=>{
+      codeHtml += '<div class="code-line" data-line="' + i + '">'
+               +    '<span class="ln">' + (i+1) + '</span>'
+               +    '<span class="ct">' + line.replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</span>'
+               +  '</div>';
+    });
+
+    $("#screen").innerHTML =
+      '<section class="level">'
+      + '<div class="level-head">'
+      +   '<span class="chip">Level 4</span>'
+      +   '<h2>🐞 Cari Kesalahannya!</h2>'
+      +   '<p class="level-desc"><b>' + q.title + '</b><br>' + q.hint + '</p>'
+      + '</div>'
+      + '<div class="code-box" id="l4code">' + codeHtml + '</div>'
+      + '<div id="l4opts"></div>'
+      + '</section>';
+
+    let answered = false;
+
+    $$(".code-line").forEach(lineEl=>{
+      lineEl.addEventListener("click", ()=>{
+        if(answered) return;
+        const i = Number(lineEl.dataset.line);
+        if(i === q.badLine){
+          lineEl.classList.add("sel");
+          showOptions();
+        } else {
+          wrongs++;
+          lineEl.classList.add("no");
+          setTimeout(()=> lineEl.classList.remove("no"), 500);
+          toast(FB.notBug, "bad");
+        }
+      });
+    });
+
+    function showOptions(){
+      const box = $("#l4opts");
+      if(box.dataset.open === "1") return;
+      box.dataset.open = "1";
+
+      let html = '<div class="panel" style="margin-top:14px;">'
+               + '<p class="panel-title">🛠️ Pilih perbaikannya:</p>'
+               + '<div class="opts" id="l4optlist"></div></div>';
+      box.innerHTML = html;
+
+      const list = $("#l4optlist");
+      q.options.forEach((opt, i)=>{
+        const btn = document.createElement("button");
+        btn.className = "opt";
+        btn.textContent = String.fromCharCode(65+i) + ". " + opt;
+        btn.addEventListener("click", ()=>{
+          if(answered) return;
+          if(i === q.correct){
+            answered = true;
+            btn.classList.add("ok");
+            $$(".opt", list).forEach(b=> b.disabled = true);
+            const badEl = $('.code-line[data-line="' + q.badLine + '"]');
+            if(badEl){ badEl.classList.remove("sel"); badEl.classList.add("ok"); }
+
+            toast(FB.fixed, "good");
+
+            // tampilkan penjelasan singkat
+            const exp = document.createElement("div");
+            exp.className = "panel";
+            exp.style.marginTop = "12px";
+            exp.innerHTML = '<p style="margin:0;font-size:13.5px;font-weight:700;color:#04795F;">💡 ' + q.explain + '</p>';
+            $(".level").appendChild(exp);
+
+            const isLast = qIdx === L4_QUESTIONS.length - 1;
+            const wrap = document.createElement("div");
+            wrap.className = "next-wrap";
+            const nb = document.createElement("button");
+            nb.className = "btn btn-accent btn-lg";
+            if(isLast){
+              nb.textContent = "Lanjut ke Level 5 ▶";
+              nb.onclick = ()=>{
+                const score = Math.max(50, 100 - wrongs*10);
+                completeLevel(4, score);
+                goLevel(5);
+              };
+            } else {
+              nb.textContent = "Soal Berikutnya ▶";
+              nb.onclick = ()=>{ qIdx++; window.scrollTo(0,0); renderQuestion(); };
+            }
+            wrap.appendChild(nb);
+            $(".level").appendChild(wrap);
+            wrap.scrollIntoView({behavior:"smooth", block:"center"});
+          } else {
+            wrongs++;
+            btn.classList.add("no");
+            btn.disabled = true;
+            toast(FB.wrong, "bad");
+          }
+        });
+        list.appendChild(btn);
+      });
+    }
+  }
+}
+
+/* =========================================================
+   LEVEL 5 — BOSS LEVEL: RANCANG ALGORITMAMU SENDIRI
+   ========================================================= */
+function renderLevel5(){
+  setTopbar(true, 5);
+
+  let wrongs = 0;
+  let solved = false;
+
+  const bankOrder = shuffle(L5_STEPS);
+
+  $("#screen").innerHTML =
+    '<section class="level">'
+    + '<div class="level-head">'
+    +   '<span class="chip">Level 5 • Boss</span>'
+    +   '<h2>👑 Rancang Algoritmamu Sendiri!</h2>'
+    +   '<p class="level-desc">Skenario: <b>Algoritma Peminjaman Alat Olahraga</b> 🏀<br>'
+    +   'Pilih <b>hanya langkah yang relevan &amp; logis</b>, lalu susun urutannya. '
+    +   'Hati-hati, ada langkah jebakan!</p>'
+    + '</div>'
+    + '<div class="panel">'
+    +   '<p class="panel-title">📝 Algoritmaku (klik ✕ untuk membuang, seret/klik untuk mengurutkan)</p>'
+    +   '<div class="dropzone sortlist" id="l5mine"></div>'
+    + '</div>'
+    + '<div class="panel">'
+    +   '<p class="panel-title">🗂️ Bank Langkah (klik untuk menambahkan)</p>'
+    +   '<div id="l5bank" style="display:flex;flex-direction:column;gap:8px;"></div>'
+    + '</div>'
+    + '<button class="btn btn-primary btn-lg" id="l5check">✅ Periksa Algoritmaku</button>'
+    + '</section>';
+
+  const mine = $("#l5mine");
+  const bank = $("#l5bank");
+
+  bankOrder.forEach(step=>{
+    const btn = document.createElement("button");
+    btn.className = "bank-item";
+    btn.dataset.id = step.id;
+    btn.innerHTML = '<span style="flex:1;">' + step.text + '</span><span style="color:#C4C4D8;font-weight:900;">+</span>';
+    btn.addEventListener("click", ()=>{
+      if(solved) return;
+      addToMine(step.id, step.text);
+      btn.classList.add("used");
+      renumberMine();
+    });
+    bank.appendChild(btn);
+  });
+
+  makeSortable(mine, renumberMine);
+
+  function addToMine(id, text){
+    const el = document.createElement("div");
+    el.className = "step";
+    el.setAttribute("data-sortable", "1");
+    el.draggable = true;
+    el.dataset.id = id;
+    el.innerHTML = '<span class="step-num"></span>'
+                 + '<span class="step-txt">' + text + '</span>'
+                 + '<button class="rm js-remove" title="Buang">✕</button>';
+    el.querySelector(".js-remove").addEventListener("click", (e)=>{
+      e.stopPropagation();
+      if(solved) return;
+      const bid = el.dataset.id;
+      const bankBtn = bank.querySelector('.bank-item[data-id="' + bid + '"]');
+      if(bankBtn) bankBtn.classList.remove("used");
+      el.remove();
+      renumberMine();
+    });
+    mine.appendChild(el);
+  }
+
+  function renumberMine(){
+    $$(".step", mine).forEach((el, i)=>{
+      const n = $(".step-num", el);
+      if(n) n.textContent = i + 1;
+    });
+  }
+
+  $("#l5check").addEventListener("click", ()=>{
+    if(solved) return;
+    const els = $$(".step", mine);
+    const ids = els.map(el=> Number(el.dataset.id));
+
+    // cek ada jebakan?
+    const hasDecoy = ids.some(id=>{
+      const s = L5_STEPS.find(x=> x.id === id);
+      return s && !s.ok;
+    });
+
+    if(ids.length !== L5_TARGET.length){
+      wrongs++;
+      toast("🤔 Belum lengkap! Algoritma butuh tepat " + L5_TARGET.length + " langkah.", "bad");
+      return;
+    }
+    if(hasDecoy){
+      wrongs++;
+      els.forEach(el=>{
+        const s = L5_STEPS.find(x=> x.id === Number(el.dataset.id));
+        el.classList.toggle("no", !!s && !s.ok);
+      });
+      toast(FB.decoy, "bad");
+      return;
+    }
+
+    const orderOk = ids.every((v, i)=> v === L5_TARGET[i]);
+    if(!orderOk){
+      wrongs++;
+      els.forEach((el, i)=>{
+        const ok = Number(el.dataset.id) === L5_TARGET[i];
+        el.classList.remove("ok","no");
+        el.classList.add(ok ? "ok" : "no");
+      });
+      toast(FB.orderBad, "bad");
+      return;
+    }
+
+    // ---- BERHASIL ----
+    solved = true;
+    els.forEach(el=>{ el.classList.remove("no"); el.classList.add("ok"); });
+    $("#l5check").disabled = true;
+    toast(FB.correct, "good");
+
+    const score = Math.max(50, 100 - wrongs*12);
+    completeLevel(5, score);
+
+    const wrap = document.createElement("div");
+    wrap.className = "next-wrap";
+    const btn = document.createElement("button");
+    btn.className = "btn btn-accent btn-lg";
+    btn.textContent = "🏆 Lihat Hasil Akhir";
+    btn.onclick = ()=> goLevel(6);
+    wrap.appendChild(btn);
+    $(".level").appendChild(wrap);
+    wrap.scrollIntoView({behavior:"smooth", block:"center"});
+  });
+}
+
+/* =========================================================
+   LAYAR KELULUSAN
+   ========================================================= */
+function renderGraduation(){
+  setTopbar(true, 5);
+  $("#progressText").textContent = "Selesai!";
+
+  const names = ["Kamus Algoritma", "Susun Langkahnya", "Cocokkan Simbolnya", "Cari Kesalahannya", "Boss Level"];
+  let rows = "";
+  for(let i=1;i<=5;i++){
+    const s = state.scores[i] || 0;
+    rows += '<div class="score-row">'
+          +   '<span class="nm">Level ' + i + '</span>'
+          +   '<span class="bar"><i style="width:' + s + '%"></i></span>'
+          +   '<span class="vl">' + s + '</span>'
+          + '</div>';
+  }
+
+  const total = totalScore();
+  const maxTotal = 500;
+  const pct = Math.round((total / maxTotal) * 100);
+
+  let predikat = "Algoritma Pemula 🌱";
+  if(pct >= 90) predikat = "Master Algoritma 🌟";
+  else if(pct >= 75) predikat = "Perancang Algoritma Hebat ⭐";
+  else if(pct >= 60) predikat = "Petualang Algoritma 🚀";
+
+  $("#screen").innerHTML =
+    '<section class="level">'
+    + '<div class="result-card">'
+    +   '<div class="badge-circle">' + BADGE_EMOJI + '</div>'
+    +   '<h2 class="badge-title">' + BADGE_NAME + '</h2>'
+    +   '<p class="badge-sub">Selamat! Kamu menyelesaikan semua 5 level Algo Quest.</p>'
+    +   '<div class="total-box">'
+    +     '<div class="t-num">' + total + '</div>'
+    +     '<div class="t-lab">TOTAL SKOR DARI ' + maxTotal + ' • ' + pct + '%</div>'
+    +   '</div>'
+    +   '<p style="font-weight:900;font-size:15px;margin:0 0 6px;">Predikat: ' + predikat + '</p>'
+    +   '<div class="score-rows">' + rows + '</div>'
+    +   '<div class="panel" style="text-align:left;margin-top:6px;">'
+    +     '<p class="panel-title">🧠 Yang Sudah Kamu Kuasai</p>'
+    +     '<p style="font-size:13.5px;font-weight:700;margin:0;color:#4B3FC4;line-height:1.6;">'
+    +       '✅ Mengenal istilah dasar algoritma (Algorithm, Input, Output, Process, dll)<br>'
+    +       '✅ Menyusun langkah berurutan (Sequence) termasuk percabangan JIKA<br>'
+    +       '✅ Mencocokkan simbol Flowchart (Diagram Alir) dengan fungsinya<br>'
+    +       '✅ Menemukan &amp; memperbaiki kesalahan pseudocode (Kode Semu)<br>'
+    +       '✅ Merancang algoritma sendiri dari ide sampai langkah'
+    +     '</p>'
+    +   '</div>'
+    +   '<div class="home-actions" style="margin-top:16px;">'
+    +     '<button class="btn btn-primary btn-lg" id="againBtn">🔄 Main Lagi</button>'
+    +     '<button class="btn btn-ghost" id="homeBtn2">🏠 Ke Beranda</button>'
+    +   '</div>'
+    + '</div>'
+    + '</section>';
+
+  $("#againBtn").addEventListener("click", ()=>{ window.scrollTo(0,0); renderLevel1(); });
+  $("#homeBtn2").addEventListener("click", ()=>{ window.scrollTo(0,0); renderHome(); });
+}
+
+/* =========================================================
+   SORTABLE HELPER (drag & drop + tap-to-swap)
+   ========================================================= */
+function makeSortable(list, onChange){
+  let dragEl = null;
+  let selEl  = null;
+
+  list.addEventListener("dragstart", (e)=>{
+    const t = e.target.closest("[data-sortable]");
+    if(!t) return;
+    dragEl = t;
+    t.classList.add("dragging");
+    try{ e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", ""); }catch(err){}
+  });
+
+  list.addEventListener("dragend", ()=>{
+    if(dragEl){
+      dragEl.classList.remove("dragging");
+      dragEl = null;
+      if(onChange) onChange();
+    }
+  });
+
+  list.addEventListener("dragover", (e)=>{
+    if(!dragEl) return;
+    e.preventDefault();
+    const after = getDragAfter(list, e.clientY, dragEl);
+    if(after == null) list.appendChild(dragEl);
+    else list.insertBefore(dragEl, after);
+  });
+
+  list.addEventListener("click", (e)=>{
+    if(e.target.closest(".js-remove")) return;
+    const t = e.target.closest("[data-sortable]");
+    if(!t) return;
+
+    if(selEl === t){
+      t.classList.remove("sel");
+      selEl = null;
+      return;
+    }
+    if(!selEl){
+      selEl = t;
+      t.classList.add("sel");
+      return;
+    }
+    swapNodes(selEl, t);
+    selEl.classList.remove("sel");
+    selEl = null;
+    if(onChange) onChange();
+  });
+}
+
+function getDragAfter(list, y, dragging){
+  const els = Array.prototype.slice.call(list.querySelectorAll("[data-sortable]:not(.dragging)"));
+  let closest = null;
+  let closestOffset = -Infinity;
+  els.forEach(el=>{
+    const box = el.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if(offset < 0 && offset > closestOffset){
+      closestOffset = offset;
+      closest = el;
+    }
+  });
+  return closest;
+}
+
+function swapNodes(a, b){
+  const marker = document.createElement("div");
+  a.parentNode.insertBefore(marker, a);
+  b.parentNode.insertBefore(a, b);
+  marker.parentNode.insertBefore(b, marker);
+  marker.remove();
+}
+
+/* =========================================================
+   START
+   ========================================================= */
+loadState();
+renderHome();
+</script>
+</body>
+</html>
