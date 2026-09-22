@@ -774,6 +774,7 @@ $("#homeBtn").addEventListener("click", ()=>{ window.scrollTo(0,0); renderHome()
    ========================================================= */
 function renderHome(){
   setTopbar(false);
+  $("#dictBtn").classList.remove("hidden");
   const levels = [
     { n:1, ico:"🔤", title:"Kamus Algoritma",        desc:"Cocokkan 12 istilah Inggris dengan artinya" },
     { n:2, ico:"🧩", title:"Susun Langkahnya!",      desc:"Urutkan langkah peminjaman buku & izin lab" },
